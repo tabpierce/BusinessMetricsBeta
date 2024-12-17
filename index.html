@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Metrics Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Business Metrics Predictor</h1>
+    <div class="container">
+        <h2>Enter Your Metrics</h2>
+        <label for="currentRevenue">Current Annual Revenue ($):</label>
+        <input type="number" id="currentRevenue" placeholder="2000000">
+
+
+        <label for="targetRevenue">Target Revenue ($):</label>
+        <input type="number" id="targetRevenue" placeholder="10000000">
+
+
+        <label for="timeFrame">Timeframe (Years):</label>
+        <input type="number" id="timeFrame" placeholder="3">
+
+
+        <label for="profitMargin">Current Profit Margin (%):</label>
+        <input type="number" id="profitMargin" placeholder="20">
+
+
+        <label for="desiredProfit">Desired Profit Margin (%):</label>
+        <input type="number" id="desiredProfit" placeholder="30">
+
+
+        <label for="customers">Current Number of Customers:</label>
+        <input type="number" id="customers" placeholder="100">
+
+
+        <label for="avgRevenue">Average Revenue Per Customer ($):</label>
+        <input type="number" id="avgRevenue" placeholder="20000">
+
+
+        <button onclick="calculateMetrics()">Calculate</button>
+
+
+        <div id="output">Your results will appear here...</div>
+    </div>
+
+
+    <script>
+        function calculateMetrics() {
+            // Get input values
+            const currentRevenue = parseFloat(document.getElementById('currentRevenue').value);
+            const targetRevenue = parseFloat(document.getElementById('targetRevenue').value);
+            const timeFrame = parseFloat(document.getElementById('timeFrame').value);
+            const profitMargin = parseFloat(document.getElementById('profitMargin').value);
+            const desiredProfit = parseFloat(document.getElementById('desiredProfit').value);
+            const currentCustomers = parseFloat(document.getElementById('customers').value);
+            const avgRevenue = parseFloat(document.getElementById('avgRevenue').value);
+
+
+            // Validate inputs
+            if (isNaN(currentRevenue) || isNaN(targetRevenue) || isNaN(timeFrame) || isNaN(profitMargin) || 
+                isNaN(desiredProfit) || isNaN(currentCustomers) || isNaN(avgRevenue)) {
+                document.getElementById('output').innerHTML = "Please fill in all fields with valid numbers.";
+                return;
+            }
+
+
+            // Calculations
+            const annualGrowthRate = Math.pow(targetRevenue / currentRevenue, 1 / timeFrame) - 1;
+            const yearlyMilestones = [];
+            for (let i = 1; i <= timeFrame; i++) {
+                yearlyMilestones.push((currentRevenue * Math.pow(1 + annualGrowthRate, i)).toFixed(2));
+            }
+            const requiredCustomers = (targetRevenue / avgRevenue).toFixed(0);
+            const profitImprovement = desiredProfit - profitMargin;
+
+
+            // Display output
+            document.getElementById('output').innerHTML = `
+                <p>Required Annual Growth Rate: <strong>${(annualGrowthRate * 100).toFixed(2)}%</strong></p>
+                <p>Yearly Revenue Milestones:</p>
+                <ul>${yearlyMilestones.map((milestone, index) => `<li>Year ${index + 1}: $${milestone}</li>`).join('')}</ul>
+                <p>Target Number of Customers: <strong>${requiredCustomers}</strong></p>
+                <p>Profit Margin Improvement Needed: <strong>${profitImprovement}%</strong></p>
+            `;
+        }
+    </script>
+</body>
+</html>
